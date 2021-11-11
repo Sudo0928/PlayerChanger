@@ -4,8 +4,8 @@ import com.minshigee.playerchanger.domain.Participant;
 import com.minshigee.playerchanger.domain.module.Data;
 import com.minshigee.playerchanger.logic.ability.domain.Abilities;
 import com.minshigee.playerchanger.logic.ability.domain.AbilitiesFactory;
+import com.minshigee.playerchanger.logic.ability.domain.Ability;
 import com.minshigee.playerchanger.logic.game.GameData;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,8 +22,7 @@ public class AbilitiesData extends Data {
         for(int i = 0; i < tempAlive.size(); i++){
             if(!it.hasNext()) continue;
             Participant next = it.next();
-            Abilities.getPartsAbility().put(next, abilities.get(i).getAbility());
-            Bukkit.getConsoleSender().sendMessage(next + ", " + Abilities.getPartsAbility().get(next).toString());
+            Abilities.getPlayersAbility().put(next.getPlayer(), new Ability(abilities.get(i).getAbilityType(), 0L));
         }
 
     }

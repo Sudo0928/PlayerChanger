@@ -1,77 +1,59 @@
 package com.minshigee.playerchanger.logic.ability.domain;
 
-import com.minshigee.playerchanger.domain.Participant;
 import com.minshigee.playerchanger.logic.ability.domain.interface_.iAbilities;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class Abilities implements iAbilities {
+    public Abilities(AbilityType abilityType) { this.abilityType = abilityType; }
 
-    protected static HashMap<Participant, Ability> partsAbility = new HashMap<>();
+    protected static HashMap<Player, Ability> playersAbility = new HashMap<>();
 
-    protected static HashMap<Ability, String> abilityHelp = new HashMap<>();
+    protected static HashMap<AbilityType, AbilityContent> abilityContents = new HashMap<>();
 
-    protected static HashMap<Participant, Long> partsCoolDown = new HashMap<>();
-
-    public enum Ability {
-        None,
-        GoldenPig,
-        Missionary
-    }
-
-    protected Ability ability;
+    protected AbilityType abilityType;
 
     @Override
     public <T> Player updateAbility(T event) {
-//        getPartsCoolDown().forEach(player -> {
-//            if(partsCoolDown.get(player) > System.currentTimeMillis()){
-//
-//            } else {
-//
-//            }
-//        });
-
         return null;
     }
 
-    public Abilities(Ability ability) {
-        this.ability = ability;
-    }
-
-    public Ability getAbility() { return this.ability; }
-
-    public static HashMap<Participant, Ability> getPartsAbility(){
-        return partsAbility;
-    }
-
-    public static void setPartAbility(Participant part, Ability ability){
-        partsAbility.replace(part, ability);
-    }
-
-    public static Ability getPartAbility(Participant part){
-        return partsAbility.get(part);
-    }
-
-    public static String getAbilityHelp(Ability ability){
-        return abilityHelp.get(ability);
-    }
-
-    public static HashMap<Participant, Long> getPartsCoolDown() { return partsCoolDown; }
-
-    public ArrayList<Participant> getThisAbilityParts(Ability ability){
-        Set<Map.Entry<Participant, Ability>> entrySet = Abilities.getPartsAbility().entrySet();
-        ArrayList<Participant> tmpParts = new ArrayList<>();
-        for (Map.Entry<Participant, Ability> entry : entrySet) {
-            if (entry.getValue().equals(ability)) {
-                tmpParts.add(entry.getKey());
-            }
+    public Boolean checkCoolDown(Player player)
+    {
+        Long time = getPlayerAbility(player).getCoolDown();
+        if(getPlayerAbility(player) != null && time > System.currentTimeMillis()){
+            long longRemaining = time - System.currentTimeMillis();
+            int intRemaining = (int) (longRemaining / 1000);
+            if(intRemaining <= 5) player.sendMessage("쿨타임이 " + intRemaining + " 초 남았습니다.");
+            return false;
         }
+        return true;
+    }
 
+    public AbilityType getAbilityType(){
+        return abilityType;
+    }
 
+    public static HashMap<Player, Ability> getPlayersAbility(){
+        return playersAbility;
+    }
+    public static Ability getPlayerAbility(Player player){
+        return playersAbility.get(player);
+    }
+    public static void setPlayerAbility(Player player, Ability ability){
+        playersAbility.replace(player, ability);
+    }
+
+    public static HashMap<AbilityType, AbilityContent> getAbilityContents(){ return abilityContents; }
+    public static AbilityContent getAbilityContent(AbilityType abilitytype) { return abilityContents.get(abilitytype); }
+
+    public static void setPlayerCoolDown(Player player, double second) { playersAbility.get(player).setCoolDown(System.currentTimeMillis() + (long)(second * 1000)); }
+
+    public ArrayList<Player> getThisAbilityPlayer(AbilityType abilityType){
+        ArrayList<Player> tmpParts = new ArrayList<>();
+        playersAbility.forEach((player, abType) -> { if(abType.getAbilityType().equals(abilityType)) tmpParts.add(player); });
         return tmpParts;
     }
 }

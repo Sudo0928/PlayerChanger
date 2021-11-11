@@ -1,6 +1,7 @@
 package com.minshigee.playerchanger.logic.ability.domain;
 
 import com.minshigee.playerchanger.logic.ability.domain.ability.GoldenPig;
+import com.minshigee.playerchanger.logic.ability.domain.ability.Rush;
 import com.minshigee.playerchanger.logic.ability.domain.ability.Missionary;
 import org.bukkit.Bukkit;
 
@@ -14,6 +15,7 @@ public class AbilitiesFactory {
     private static ArrayList<Class<? extends Abilities>> abilityClazz = new ArrayList<>(){{
         add(GoldenPig.class);
         add(Missionary.class);
+        add(Rush.class);
     }};
 
     public static ArrayList<? extends Abilities> createAbilites(int count)
@@ -24,23 +26,21 @@ public class AbilitiesFactory {
         }};
         Collections.shuffle(tmpClazz);
         for(int i = 0; i < count && i < tmpClazz.size(); i++){
-            Bukkit.getConsoleSender().sendMessage("반복 횟수 : " + i);
+            Optional<? extends Abilities> mission = createAbility(tmpClazz,i);
+            if(mission.isEmpty())
+                continue;
+            abilities.add(mission.get());
+        }
+        count -= tmpClazz.size();
+        tmpClazz = new ArrayList<>(abilityClazz);
+        Collections.shuffle(tmpClazz);
+        for(int i = 0; i < count; i++){
             Optional<? extends Abilities> mission = createAbility(tmpClazz,i);
             if(mission.isEmpty()){
                 continue;
             }
             abilities.add(mission.get());
         }
-//        count -= tmpClazz.size();
-//        tmpClazz = new ArrayList<>(abilityClazz);
-//        Collections.shuffle(tmpClazz);
-//        for(int i = 0; i < count; i++){
-//            Optional<? extends Abilities> mission = createAbility(tmpClazz,i);
-//            if(mission.isEmpty()){
-//                continue;
-//            }
-//            abilities.add(mission.get());
-//        }
         return abilities;
     }
 

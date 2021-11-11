@@ -1,7 +1,6 @@
 package com.minshigee.playerchanger.logic.ability;
 
 import com.minshigee.playerchanger.PlayerChanger;
-import com.minshigee.playerchanger.domain.Participant;
 import com.minshigee.playerchanger.domain.annotation.MappingChange;
 import com.minshigee.playerchanger.domain.module.Repository;
 import com.minshigee.playerchanger.logic.ability.domain.Abilities;
@@ -28,9 +27,7 @@ public class AbilitiesRepository extends Repository<AbilitiesData> {
         if(!(event instanceof Event))
             return;
         Bukkit.getConsoleSender().sendMessage("----------------");
-        for(Abilities abilities : localDB.getAbility()){
-            abilities.updateAbility(event);
-        }
+        localDB.getAbility().forEach(abilities -> abilities.updateAbility(event));
     }
 
     public void resetAbilities(){
@@ -45,10 +42,10 @@ public class AbilitiesRepository extends Repository<AbilitiesData> {
 
     @MappingChange
     public void chageAbility(Player from, Player to){
-        Participant fromPart = GameData.getParticipantByPlayer(from).get();
-        Participant toPart = GameData.getParticipantByPlayer(to).get();
-        var tmp = Abilities.getPartAbility(fromPart);
-        Abilities.setPartAbility(fromPart, Abilities.getPartAbility(toPart));
-        Abilities.setPartAbility(toPart, tmp);
+        Player fromPlayer = GameData.getParticipantByPlayer(from).get().getPlayer();
+        Player toPlayer = GameData.getParticipantByPlayer(to).get().getPlayer();
+        var tmp = Abilities.getPlayerAbility(fromPlayer);
+        Abilities.setPlayerAbility(fromPlayer, Abilities.getPlayerAbility(toPlayer));
+        Abilities.setPlayerAbility(toPlayer, tmp);
     }
 }
