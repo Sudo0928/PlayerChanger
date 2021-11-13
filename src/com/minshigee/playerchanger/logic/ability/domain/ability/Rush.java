@@ -7,13 +7,9 @@ import com.minshigee.playerchanger.logic.ability.domain.AbilityType;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 public class Rush extends Abilities{
@@ -21,7 +17,7 @@ public class Rush extends Abilities{
     public Rush()
     {
         super(AbilityType.Rush);
-        abilityContents.put(abilityType, new AbilityContent(abilityType, 10
+        abilityContents.put(abilityType, new AbilityContent(abilityType, 30
                 , ChatColor.GREEN + "\n──────[능력 정보]──────\n"
                 + ChatColor.AQUA + "급발진 " + ChatColor.WHITE + "[" + ChatColor.GRAY + "능력 활성화" + ChatColor.WHITE + "]" + ChatColor.AQUA + "B 등급" + ChatColor.WHITE + "인간\n"
                 + "금괴를 우클릭시 급발진 한다.\n"
@@ -39,7 +35,7 @@ public class Rush extends Abilities{
         PlayerInteractEvent playerIE = (PlayerInteractEvent) event;
         Player player = playerIE.getPlayer();
 
-        getThisAbilityPlayer(abilityType).stream().filter(p -> p.equals(player)).filter(p -> checkCoolDown(p)).filter(p -> p.getItemInHand().getType().equals(Material.GOLD_INGOT)).forEach(p -> {
+        getThisAbilityPlayer(abilityType).stream().filter(p -> p.equals(player)).filter(p -> checkCoolDown(p)).filter(p -> p.getInventory().getItemInMainHand().getType().equals(Material.GOLD_INGOT)).forEach(p -> {
             setPlayerCoolDown(p, Abilities.getAbilityContent(abilityType).getCoolTime());
             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 3, 255));
             new BukkitRunnable() {
@@ -47,19 +43,21 @@ public class Rush extends Abilities{
                 @Override
                 public void run() {
                     Vector vector = p.getLocation().getDirection().normalize();
-                    p.setVelocity(new Vector(vector.getX() * 0.7, p.getVelocity().getY(), vector.getZ() * 0.7));
+                    p.setVelocity(new Vector(vector.getX(), p.getVelocity().getY(), vector.getZ()));
                     p.getWorld().playSound(p.getLocation(), Sound.BLOCK_STONE_BREAK, 1, 1);
-                    if(count++ > 30) this.cancel();
+                    p.getWorld().playEffect(p.getLocation(), Effect.SMOKE, 1);
                     p.getNearbyEntities(1, 2, 1).forEach(e -> {
-                        Vector v1 = p.getLocation().getDirection();
-                        Vector v2 = e.getLocation().getDirection();
-                        e.setVelocity(v1.subtract(v2));
+                        Location v1 = p.getLocation();
+                        Location v2 = e.getLocation();
+                        Location tmp = v2.subtract(v1);
+                        e.setVelocity(new Vector(tmp.getX(), 1, tmp.getZ()));
                         if(e instanceof Player) {
                             Player ep = (Player)e;
                             ep.getWorld().playSound(ep.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
                             ep.damage(2);
                         }
                     });
+                    if(count++ > 30) this.cancel();
                 }
             }.runTaskTimer(PlayerChanger.singleton, 0L, 1L);
 

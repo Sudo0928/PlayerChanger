@@ -26,7 +26,7 @@ public class Abilities implements iAbilities {
         if(getPlayerAbility(player) != null && time > System.currentTimeMillis()){
             long longRemaining = time - System.currentTimeMillis();
             int intRemaining = (int) (longRemaining / 1000);
-            if(intRemaining <= 5) player.sendMessage("쿨타임이 " + intRemaining + " 초 남았습니다.");
+            player.sendMessage("쿨타임이 " + intRemaining + " 초 남았습니다.");
             return false;
         }
         return true;

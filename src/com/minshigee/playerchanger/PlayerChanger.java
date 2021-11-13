@@ -19,8 +19,6 @@ import com.minshigee.playerchanger.logic.game.GameRepositoy;
 import com.minshigee.playerchanger.logic.mission.MissionController;
 import com.minshigee.playerchanger.logic.mission.MissionData;
 import com.minshigee.playerchanger.logic.mission.MissionRepository;
-import com.minshigee.playerchanger.util.Util;
-import org.apache.logging.log4j.core.config.AppenderRef;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,7 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class PlayerChanger extends JavaPlugin {
 

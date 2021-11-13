@@ -1,8 +1,6 @@
 package com.minshigee.playerchanger.logic.ability.domain;
 
-import com.minshigee.playerchanger.logic.ability.domain.ability.GoldenPig;
 import com.minshigee.playerchanger.logic.ability.domain.ability.Rush;
-import com.minshigee.playerchanger.logic.ability.domain.ability.Missionary;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Constructor;
@@ -13,8 +11,8 @@ import java.util.Optional;
 public class AbilitiesFactory {
 
     private static ArrayList<Class<? extends Abilities>> abilityClazz = new ArrayList<>(){{
-        add(GoldenPig.class);
-        add(Missionary.class);
+        //add(GoldenPig.class);
+        //add(Missionary.class);
         add(Rush.class);
     }};
 
